@@ -1,11 +1,13 @@
 DROP SCHEMA IF EXISTS PUBLIC CASCADE;
 CREATE SCHEMA PUBLIC;
 
+CREATE TYPE payment_method AS ENUM ('DEBIT_CARD','CREDIT_CARD','PIX','BOLETO','DIGITAL_WALLET','BANK_TRANSFER');
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL CHECK (length(name) > 0),
-    document VARCHAR(14) NOT NULL CHECK (length(document) > 0),
-    cellphone VARCHAR(20) NOT NULL CHECK (length(cellphone) > 0),
+    document VARCHAR(11) NOT NULL CHECK (document ~ '^[0-9]{11}$'),
+    cellphone VARCHAR(20) NOT NULL UNIQUE CHECK (length(cellphone) > 0),
     email VARCHAR(150) NOT NULL UNIQUE CHECK (length(email) > 0),
     password VARCHAR(120) NOT NULL CHECK (length(password) > 0)
 );
@@ -38,7 +40,7 @@ CREATE TABLE order_items (
 CREATE TABLE payments (
     id SERIAL PRIMARY KEY,
     value NUMERIC(10,2) NOT NULL CHECK (value > 0),
-    payment_method VARCHAR(60) NOT NULL CHECK (length(payment_method) > 0),
+    payment_method payment_method NOT NULL,
     status VARCHAR(60) NOT NULL CHECK (length(status) > 0),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     id_users INTEGER NOT NULL REFERENCES users(id),
@@ -96,6 +98,6 @@ CREATE TABLE addresses (
     id SERIAL PRIMARY KEY,
     number VARCHAR(12) NOT NULL CHECK (length(number) > 0),
     complement TEXT,
-    zip_code VARCHAR(8) NOT NULL CHECK (length(zip_code) > 0),
+    zip_code VARCHAR(8) NOT NULL CHECK (zip_code ~ '^[0-9]{8}$'),
     id_users INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
