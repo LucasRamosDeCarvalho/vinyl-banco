@@ -53,7 +53,7 @@ CREATE TABLE artists (
     description TEXT
 );
 
-CREATE TABLE accessibilities (
+CREATE TABLE accessibility (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL CHECK (length(name) > 0),
     description TEXT
@@ -88,10 +88,10 @@ CREATE TABLE vinyl_artists (
     id_artista INTEGER NOT NULL REFERENCES artists(id) ON DELETE CASCADE
 );
 
-CREATE TABLE user_accessibilities (
+CREATE TABLE user_accessibility (
     id SERIAL PRIMARY KEY,
     id_users INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    id_accessibility INTEGER NOT NULL REFERENCES accessibilities(id) ON DELETE CASCADE
+    id_accessibility INTEGER NOT NULL REFERENCES accessibility(id) ON DELETE CASCADE
 );
 
 CREATE TABLE addresses (
